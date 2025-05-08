@@ -9,20 +9,49 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<script type="module" src="work.js"></script>
 </head>
+
 <body>
-<header>
-	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-	<nav>
-		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<li>login</li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-		</ul>
-	</nav>
-</header>
+	<header>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+		<nav>
+			<ul>
+				<li>
+					<a href = "#" id="projets">projets</a>
+				</li>
+
+				<li>
+					<a href = "#" id="contact">contact</a>
+				</li>
+
+				<li>
+					<a href = "#" id="login">login</a>
+				</li>
+
+				<li>
+					<a href = "#" id="instagram">
+					<img src="./assets/icons/instagram.png" alt="Instagram">
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</header>
 <main>
+	<section class="log">
+		<div id="loginwindow">
+			<h2>Log In</h2>
+			<form action="#" method="post">
+				<label for="email">Email</label>
+				<input type="email" name="email" id="login_email">
+				<label for="mot de passe">Mot de passe</label>
+				<input type="mot de passe" name="mot de passe" id="login_password">
+				<input type="submit" value="Se connecter">
+				<p>Mot de passe oublié</p>
+			</form>
+		</div>
+	</section>
+<section id="page">
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
@@ -36,6 +65,14 @@
 	</section>
 	<section id="portfolio">
 		<h2>Mes Projets</h2>
+		<div>
+			<nav class="filterBar">
+				<div><a href=#><span>Tous</span></a></div>
+				<div><a href=#><span>Objets</span></a></div>
+				<div><a href=#><span>Appartements</span></a></div>
+				<div><a href=#><span>Hotels & restaurants</span></a></div>
+			</nav>
+		</div>
 		<div class="gallery">
 			<figure>
 				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
@@ -96,6 +133,7 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
+</section>
 </main>
 
 <footer>

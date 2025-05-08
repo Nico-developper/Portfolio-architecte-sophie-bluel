@@ -59,7 +59,7 @@ header {
 	margin: 50px 0
 }
 section {
-	margin: 50px 0
+	margin: 100px 0
 }
 
 h1{
@@ -135,19 +135,21 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
+
 #contact > * {
 	text-align: center;
-
 }
+
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
 	margin-top:30px;
@@ -161,9 +163,11 @@ margin: auto;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
 #contact label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -186,3 +190,61 @@ footer nav ul {
 	margin: 2em
 }
 
+.filterBar {
+	display: flex;
+	justify-content: center;
+	margin-top: 30px;
+	margin-bottom: 50px;
+	gap: 0.5em;
+}
+
+.filterBar div a {
+	text-decoration: none;
+	font-family: Syne;
+	font-weight: 400;
+	color: #1D6154;
+	border: 1px solid #1D6154;
+	border-radius: 25px;
+	padding: 5px 20px 5px 20px;
+
+}
+
+/************* Section Login ******************/
+#loginwindow {
+	display: none;
+	width: 50%;
+	margin: 200px auto 300px auto;
+}
+
+#loginwindow > * {
+	text-align: center;
+}
+
+#loginwindow h2{
+	margin-bottom: 20px;
+}
+
+#loginwindow form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#loginwindow input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#loginwindow label {
+	margin: 2em 0 1em 0;
+}
+
+#loginwindow p {
+	text-align: center;
+	text-decoration: underline;
+	margin-top:20px;
+	
+}
