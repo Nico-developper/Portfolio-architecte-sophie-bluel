@@ -41,14 +41,17 @@
 	<section class="log">
 		<div id="loginwindow">
 			<h2>Log In</h2>
-			<form action="#" method="post">
-				<label for="email">Email</label>
-				<input type="email" name="email" id="login_email">
-				<label for="mot de passe">Mot de passe</label>
-				<input type="mot de passe" name="mot de passe" id="login_password">
-				<input type="submit" value="Se connecter">
-				<p>Mot de passe oublié</p>
-			</form>
+				<form id="login_form" action="#" method="post">
+  					<label for="email">Email</label>
+  					<input type="email" name="email" id="login_email">
+
+  					<label for="mdp">Mot de passe</label>
+  					<input type="password" name="password" id="login_password">
+
+  					<input type="submit" value="Se connecter">
+  					<p id="login_error" style="color: red; display: none;">Email ou mot de passe incorrect</p>
+  					<p>Mot de passe oublié</p>
+</form>
 		</div>
 	</section>
 <section id="page">
@@ -66,59 +69,9 @@
 	<section id="portfolio">
 		<h2>Mes Projets</h2>
 		<div>
-			<nav class="filterBar">
-				<div><a href=#><span>Tous</span></a></div>
-				<div><a href=#><span>Objets</span></a></div>
-				<div><a href=#><span>Appartements</span></a></div>
-				<div><a href=#><span>Hotels & restaurants</span></a></div>
-			</nav>
+			<nav id="filterBtn" class="filterBar"></nav>
 		</div>
-		<div class="gallery">
-			<figure>
-				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-				<figcaption>Abajour Tahina</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-				<figcaption>Appartement Paris V</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
-				<figcaption>Restaurant Sushisen - Londres</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-				<figcaption>Villa “La Balisiere” - Port Louis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-				<figcaption>Structures Thermopolis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-				<figcaption>Appartement Paris X</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-				<figcaption>Pavillon “Le coteau” - Cassis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-				<figcaption>Villa Ferneze - Isola d’Elba</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-				<figcaption>Appartement Paris XVIII</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-				<figcaption>Bar “Lullaby” - Paris</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-				<figcaption>Hotel First Arte - New Delhi</figcaption>
-			</figure>
-		</div>
+		<div class="gallery"></div>
 	</section>
 	<section id="contact">
 		<h2>Contact</h2>

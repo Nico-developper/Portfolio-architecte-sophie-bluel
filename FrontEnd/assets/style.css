@@ -198,7 +198,7 @@ footer nav ul {
 	gap: 0.5em;
 }
 
-.filterBar div a {
+.filterBar div a button{
 	text-decoration: none;
 	font-family: Syne;
 	font-weight: 400;
@@ -206,9 +206,21 @@ footer nav ul {
 	border: 1px solid #1D6154;
 	border-radius: 25px;
 	padding: 5px 20px 5px 20px;
+	background-color: #FFFEF8;
 
 }
 
+.filterBar .active{
+	text-decoration: none;
+	font-family: Syne;
+	font-weight: 400;
+	color: #FFFEF8;
+	border: 1px solid #1D6154;
+	border-radius: 25px;
+	padding: 5px 20px 5px 20px;
+	background-color: #1D6154;
+
+}
 /************* Section Login ******************/
 #loginwindow {
 	display: none;
