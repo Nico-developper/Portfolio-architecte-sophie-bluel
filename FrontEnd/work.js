@@ -1,4 +1,4 @@
-const urlApi = "http://localhost:5678"
+const urlApi = "http://localhost:5678";
 
 /********** Affichage connexion **********************************************************************/
 let login = document.getElementById('login');
@@ -6,7 +6,7 @@ let connectdisplay = document.getElementById("login_Window");
 let connectdisplaypage = document.getElementById("page");
 
 login.addEventListener("click", () => {  
-    if (getComputedStyle(connectdisplay).display != "none") {
+    if (getComputedStyle(connectdisplay).display !== "none") {
         connectdisplay.style.display = "none";
         connectdisplaypage.style.display = "block";
     } else {
@@ -36,7 +36,6 @@ const response = await fetch(urlApi+"/api/users/login", {
 
 const data = await response.json();
     if (response.ok) {
-        console.log("Connexion réussie :", data);
 
         // Stocker le token et l'ID utilisateur
         localStorage.setItem("token", data.token);
@@ -68,18 +67,30 @@ const token = localStorage.getItem("token");
         localStorage.removeItem("userId");
         window.location.href = "index.html";
         });
+
     }}
-}});
+    //Une fois connecter en admin, gestion des projets et fenêtre Modale
+const modifGallery = document.querySelector(".link_Modif_Gallery");
+const filtres = document.querySelector(".filter_Bar");
+
+    if (token) {
+        modifGallery.style.display = "flex";
+        filtres.style.display = "none";
+    } else {
+        modifGallery.style.display = "none";
+        filtres.style.display = "flex";
+    };
+    }
+});
 
 /********** Création des filtres par catégories ******************************************************/
 async function affichageFlitres() {
-    let listeCategories = await fetch("http://localhost:5678/api/categories");
+let listeCategories = await fetch("http://localhost:5678/api/categories");
     listeCategories = await listeCategories.json();
-    //console.log(listeCategories);
 
-    const a = document.querySelector(".filter_Bar");
+const a = document.querySelector(".filter_Bar");
 
-    let content = `<div><a><button data-id="all">Tous</button></a></div>`;
+let content = `<div><a><button data-id="all">Tous</button></a></div>`;
 
     listeCategories.map(categ => {
         content += `<div><a><button data-id="${categ.id}">${categ.name}</button></a></div>`;
@@ -88,7 +99,7 @@ async function affichageFlitres() {
     a.innerHTML = content;
 
     // Activation des filtres
-    const boutons = document.querySelectorAll(".filter_Bar button");
+const boutons = document.querySelectorAll(".filter_Bar button");
     boutons.forEach(bouton => {
     bouton.addEventListener("click", (e) => {
         e.preventDefault();
@@ -101,15 +112,15 @@ async function affichageFlitres() {
 
 /********** Affichage des projets ********************************************************************/
 async function affichageProjets(categoryId = null) {
-    let listeTravaux = await fetch("http://localhost:5678/api/works");
+let listeTravaux = await fetch("http://localhost:5678/api/works");
     listeTravaux = await listeTravaux.json();
 
     if (categoryId !== null && categoryId !== "all") {
         listeTravaux = listeTravaux.filter(work => work.categoryId === parseInt(categoryId));
     }
 
-    const projets = document.querySelector(".gallery");
-    let content = "";
+const projets = document.querySelector(".gallery");
+let content = "";
 
     listeTravaux.forEach(a => {
         content += `
@@ -122,32 +133,13 @@ async function affichageProjets(categoryId = null) {
     projets.innerHTML = content;
 };
 
-/********** Une fois connecter en admin, gestion des projets et fenêtre Modale ***********************/
-document.addEventListener("DOMContentLoaded", () => {
-    const modifGallery = document.querySelector(".link_Modif_Gallery");
-    const filtres = document.querySelector(".filter_Bar");
-    const token = localStorage.getItem("token");
-
-    if (token) {
-        modifGallery.style.display = "flex";
-        filtres.style.display = "none";
-    } else {
-        modifGallery.style.display = "none";
-        filtres.style.display = "flex";
-    }
-});
-
-
 /********** Fenêtre Modale ***************************************************************************/
 function openModal() {
     document.getElementById("modale_Cover").classList.remove("modale_Hidden");
 }
-
 function closeModal() {
     document.getElementById("modale_Cover").classList.add("modale_Hidden");
-    const page2_Modale = document.getElementById("page2_Modale");
 }
-
     // Clic sur le bouton de fermeture
     document.querySelector(".close_Modale").addEventListener("click", closeModal);
 
@@ -157,21 +149,19 @@ function closeModal() {
         closeModal();
     }
 });
-
 document.querySelector(".link_Modif_Gallery").addEventListener("click", openModal);
-
 
 /********** Affichage des projets dans la modale *****************************************************/
 async function affichageProjetsModale(categoryId = null) {
-    let listeTravaux = await fetch("http://localhost:5678/api/works");
+let listeTravaux = await fetch("http://localhost:5678/api/works");
     listeTravaux = await listeTravaux.json();
 
     if (categoryId !== null && categoryId !== "all") {
         listeTravaux = listeTravaux.filter(work => work.categoryId === parseInt(categoryId));
     }
 
-    const projets = document.querySelector(".gallery_Modale");
-    let content = "";
+const projets = document.querySelector(".gallery_Modale");
+let content = "";
 
     listeTravaux.forEach(a => {
         content += `
@@ -196,8 +186,9 @@ document.getElementById("modale_Form").addEventListener("click", afficherFormula
 
 /********** Supprimer des projets dans la modale *****************************************************/
 async function handleDeleteProject(e) {
-    const projectId = e.currentTarget.dataset.id;
-    const token = localStorage.getItem("token");
+const projectId = e.currentTarget.dataset.id;
+const token_Delete = localStorage.getItem("token");
+const delete_Error =document.getElementById("delete_Error");
 
     if (!projectId) {
         console.error("ID du projet non défini.");
@@ -205,16 +196,16 @@ async function handleDeleteProject(e) {
     }
 
     try {
-        const response = await fetch(`http://localhost:5678/api/works/${projectId}`, {
+const response = await fetch(`http://localhost:5678/api/works/${projectId}`, {
             method: "DELETE",
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token_Delete}`,
                 Accept: "*/*"
             }
         });
 
         if (response.ok) {
-            const projectElement = document.querySelector(`figure[data-id="${projectId}"]`);
+const projectElement = document.querySelector(`figure[data-id="${projectId}"]`);
             if (projectElement) projectElement.remove();
 
             // Recharger la galerie pour mise à jour
@@ -222,47 +213,53 @@ async function handleDeleteProject(e) {
             affichageProjets();
         } else {
             console.error(`Erreur API : ${response.status}`);
-            alert("Échec de la suppression du projet. Vérifiez vos droits.");
+            delete_Error.textContent ="Échec de la suppression du projet. Vérifiez vos droits.";
         }
     } catch (error) {
         console.error("Erreur réseau :", error);
-        alert("Une erreur réseau est survenue.");
+        error.textContent ="Une erreur réseau est survenue.";
     }
 }
 
 
 /********** Affichage dynamique du formulaire d'ajout ***********************************************/
 function afficherFormulaireAjout() {
-    const addProjectContent = document.getElementById("modale_Add_Projects");
-    const page1_Modale = document.getElementById("page1_Modale")
+const addProjectContent = document.getElementById("modale_Add_Projects");
+const page1_Modale = document.getElementById("page1_Modale")
 
     page1_Modale.style.display = "none"
     addProjectContent.style.display = "flex";
     addProjectContent.style.flexDirection = "column";
     addProjectContent.style.alignItems = "center";
 
-    // Gestion du bouton retour
-    const backBtn = document.getElementById("back_Gallery");
+    back_Page1()
+}
+    // Gestion de la soumission
+const valider = document.getElementById("valider");
+    if (valider) {
+        valider.addEventListener("click", handleAjoutProjet);  
+};
+
+
+// Gestion du bouton retour
+function back_Page1() {
+const backBtn = document.getElementById("back_Gallery");
     backBtn.addEventListener("click", () => {
     // Revenir à la page 1 de la modale
         document.getElementById("modale_Add_Projects").style.display = "none";
         document.getElementById("page1_Modale").style.display = "block";
-    });
-}
-    // Gestion de la soumission
-    const valider = document.getElementById("valider");
-    if (valider) {
-        valider.addEventListener("submit", handleAjoutProjet);  
+    })
 };
+
 
 /********** Prévisualisation de l'image ***********************************************/
 const fileTypes = ["image/jpeg", "image/png", "image/jpg"];
-const token = localStorage.getItem("token");
 const apiUrl = "http://localhost:5678/api/works";
+const error =document.getElementById("form_Error");
 
 document.getElementById("photo")?.addEventListener("change", function () {
-    const previewContainer = document.querySelector(".carreAjout");
-    const file = this.files[0];
+const previewContainer = document.querySelector(".carreAjout");
+const file = this.files[0];
 
     // Supprimer les anciennes prévisualisations
     previewContainer.querySelectorAll("img.preview").forEach(el => el.remove());
@@ -270,19 +267,19 @@ document.getElementById("photo")?.addEventListener("change", function () {
     if (!file) return;
 
     if (!fileTypes.includes(file.type)) {
-        alert("Format non valide. JPG et PNG uniquement.");
+        error.textContent ="Format non valide. JPG et PNG uniquement.";
         return;
     }
 
-    const img = document.createElement("img");
+const img = document.createElement("img");
     img.classList.add("preview");
     img.src = URL.createObjectURL(file);
     img.style.maxHeight = "100%";
 
-    const croixContainer = document.createElement("div");
-   croixContainer.classList.add("croix_Contenaire");
-   croixContainer.innerHTML = `
-   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+const croixContainer = document.createElement("div");
+    croixContainer.classList.add("croix_Contenaire");
+    croixContainer.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M17.6546 8.05106C18.1235 7.58214 18.1235 6.82061 17.6546 6.35169C17.1856 5.88277 16.4241 5.88277 15.9552 6.35169L12.005 10.3056L8.05106 6.35544C7.58214 5.88652 6.82061 5.88652 6.35169 6.35544C5.88277 6.82436 5.88277 7.58589 6.35169 8.05481L10.3056 12.005L6.35544 15.9589C5.88652 16.4279 5.88652 17.1894 6.35544 17.6583C6.82436 18.1272 7.58589 18.1272 8.05481 17.6583L12.005 13.7044L15.9589 17.6546C16.4279 18.1235 17.1894 18.1235 17.6583 17.6546C18.1272 17.1856 18.1272 16.4241 17.6583 15.9552L13.7044 12.005L17.6546 8.05106Z" fill="black"/>
     </svg>`;
 
@@ -291,7 +288,7 @@ document.getElementById("photo")?.addEventListener("change", function () {
     document.getElementById("texte_preview").style.display = "none";
 
     croixContainer.addEventListener("click", () => {
-    document.getElementById("texte_preview").style.display = "block";
+    document.getElementById("texte_preview").style.display = "flex";
     img.remove();
     croixContainer.style.display ="none";
 //    document.getElementById("photo").value = "";
@@ -306,186 +303,54 @@ document.getElementById("page2_Modale")?.addEventListener("submit", handleAjoutP
 async function handleAjoutProjet(e) {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
-    const form = e.target;
-
-    const photo = document.getElementById("photo").files[0];
-    const title = document.getElementById("titre").value.trim();
-    const category = document.getElementById("category").value;
+const token_Add = localStorage.getItem("token");
+const photo = document.getElementById("photo").files[0];
+const title = document.getElementById("titre").value.trim();
+const category = document.getElementById("category").value;
+const form_Error =document.getElementById("form_Error");
 
     if (!photo || !title || !category) {
-        alert("Veuillez remplir tous les champs.");
+        form_Error.textContent ="Veuillez remplir tous les champs."
         return;
     }
 
     const fileTypes = ["image/jpeg", "image/png"];
     if (!fileTypes.includes(photo.type)) {
-        alert("Image invalide (seuls JPG et PNG sont acceptés).");
+        form_Error.textContent ="Image invalide (seuls JPG et PNG sont acceptés).";
         return;
     }
 
-    const formData = new FormData();
+const formData = new FormData();
     formData.append("image", photo);
     formData.append("title", title);
     formData.append("category", category);
 
-    try {
-        const response = await fetch("http://localhost:5678/api/works", {
+    
+const response = await fetch("http://localhost:5678/api/works", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token_Add}`
             },
             body: formData
         });
 
         if (response.ok) {
-            form.reset();
-            document.querySelectorAll("img.preview").forEach(el => el.remove());
-            
-            const valider = document.getElementById("valider");
+const valider = document.getElementById("valider");
             valider.addEventListener("click", () => {
             document.getElementById("modale_Add_Projects").style.display = "none";
             document.getElementById("page1_Modale").style.display = "block";
         })
             affichageProjetsModale();
             affichageProjets();
+            
         } else {
             console.error("Erreur API :", response.status);
-            alert("Échec de l'ajout. Vérifiez vos données ou votre session.");
+            form_Error.textContent ="Échec de l'ajout. Vérifiez vos données ou votre session.";
         }
 
-    } catch (error) {
-        console.error("Erreur réseau :", error);
-        alert("Une erreur est survenue.");
-    }
-}
-
+    } 
 /********** Appel des fonctions *********************************************************************/
 
 affichageFlitres();
 affichageProjets();
 affichageProjetsModale();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**********           Test avec DAVID            ********/
-
-/*const response = await fetch('http://localhost:5678/api/works');
-const works = await response.json(); 
-
-
-const test = document.getElementById("test"); 
-for (let i = 0; i < works.length; i++) {
-    test.innerHTML += `${works[i].title}: ${works[i].id} <br>`;
-}
-*/
-
-/**********           Test récupération des donnés de l'API            ********/
-
-/*fetch(`http://localhost:5678/api/works`).then(response=>response.json().then(function(w){
-    const works =w;
-    console.log(works);
-}));
-
-fetch(`http://localhost:5678/api/categories`).then(response=>response.json().then(function(c){
-    const categories =c;
-    console.log(categories);
-}));
-*/
-
-/******** Test Recuperation form login ******/
-
-/*const form = document.querySelector('form');
-
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    //*console.log("Il n’y a pas eu de rechargement de page");
-        
-    let email = document.getElementById("login_email").value;
-    let mdp = document.getElementById("login_password").value;
-
-    //*console.log(email);
-    //*console.log(mdp);
-    
-    if (email === "" && mdp ==="") {
-        console.log('Les champs email et mdp ne sont pas rempli');
-
-    } else {
-        console.log('Le champ email et mdp sont rempli');
-    }
-});
-*/
-    
-/**********   Création des filtres par catégories (version DOM)   ********/
-
-/*async function affichageFiltresDOM() {
-    try {
-        const response = await fetch("http://localhost:5678/api/categories");
-        const categories = await response.json();
-        console.log(categories);
-
-        const filterBar = document.querySelector(".filterBar");
-
-        // Ajout du bouton "Tous"
-        const boutonTous = document.createElement("button");
-        boutonTous.textContent = "Tous";
-        boutonTous.dataset.id = "all";
-        filterBar.appendChild(boutonTous);
-
-        // Ajout des boutons par catégorie
-        categories.forEach(categ => {
-            const bouton = document.createElement("button");
-            bouton.textContent = categ.name;
-            bouton.dataset.id = categ.id;
-            filterBar.appendChild(bouton);
-        });
-
-        // Activation des filtres
-        const boutons = filterBar.querySelectorAll("button");
-        boutons.forEach(bouton => {
-            bouton.addEventListener("click", () => {
-                // Ajoute ou enlève la classe active pour le style
-                boutons.forEach(b => b.classList.remove("active"));
-                bouton.classList.add("active");
-
-                // Affiche les projets filtrés
-                affichageProjets(bouton.dataset.id);
-            });
-        });
-
-    } catch (error) {
-        console.error("Erreur lors de l'affichage des filtres :", error);
-    }
-}
-
-affichageFiltresDOM();
-*/
-
-
-
