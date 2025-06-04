@@ -243,15 +243,11 @@
                                         <label for="category"
                                             >Catégorie :</label
                                         >
-                                        <select id="category" name="category">
-                                            <option value="1">Objets</option>
-                                            <option value="2">
-                                                Appartements
-                                            </option>
-                                            <option value="3">
-                                                Hôtels & restaurants
-                                            </option>
-                                        </select>
+                                        <select
+                                            id="category"
+                                            name="category"
+                                            required
+                                        ></select>
                                     </div>
                                     <div
                                         id="form_Error"
@@ -260,6 +256,7 @@
                                     <hr class="ligne_hr" />
                                     <div id="valider">
                                         <input
+                                            id="button_Valider"
                                             class="buttun_Submit"
                                             type="submit"
                                             value="Valider"

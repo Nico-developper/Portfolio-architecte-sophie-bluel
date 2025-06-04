@@ -153,9 +153,10 @@ document.getElementById("modale_Cover").addEventListener("click", (e) => {
         closeModal();
     }
 });
-document
-    .querySelector(".link_Modif_Gallery")
-    .addEventListener("click", openModal);
+document.querySelector(".link_Modif_Gallery").addEventListener("click", () => {
+    openModal();
+    choix_Categorie();
+});
 
 /********** Affichage des projets dans la modale *****************************************************/
 async function affichageProjetsModale(categoryId = null) {
@@ -255,7 +256,6 @@ if (valider) {
     valider.addEventListener("click", handleAjoutProjet);
 }
 
-// Gestion du bouton retour
 function back_Page1() {
     const backBtn = document.getElementById("back_Gallery");
     backBtn.addEventListener("click", () => {
@@ -310,6 +310,8 @@ document.getElementById("photo")?.addEventListener("change", function () {
         document.getElementById("texte_preview").style.display = "flex";
         img.remove();
         croixContainer.remove();
+        document.getElementById("photo").value = "";
+        verifierChamps(null, champTitre.value.trim(), champCategory.value);
     });
 });
 
@@ -360,8 +362,8 @@ async function handleAjoutProjet(e) {
         document.querySelector(".carreAjout .preview")?.remove();
         document.getElementById("texte_preview").style.display = "flex";
         document.getElementById("croix_Contenaire").style.display = "none";
+        verifierChamps(null, "", "");
 
-        // Retour à la page 1 de la modale
         document.getElementById("modale_Add_Projects").style.display = "none";
         document.getElementById("page1_Modale").style.display = "block";
 
@@ -369,6 +371,61 @@ async function handleAjoutProjet(e) {
     } else {
         form_Error.textContent = "Erreur lors de l'ajout du projet.";
     }
+}
+
+/********** boutton valider *********************************************************************/
+const bouton_Valider = document.getElementById("button_Valider");
+const champPhoto = document.getElementById("photo");
+const champTitre = document.getElementById("titre");
+const champCategory = document.getElementById("category");
+
+function verifierChamps(photo, title, category) {
+    if (!photo || !title || !category) {
+        bouton_Valider.style.backgroundColor = "#A7A7A7";
+    } else {
+        bouton_Valider.style.backgroundColor = "#1D6154";
+        form_Error.textContent = "";
+    }
+}
+
+// Mise à jour dynamique à chaque modification
+champPhoto.addEventListener("change", () => {
+    verifierChamps(
+        champPhoto.files[0],
+        champTitre.value.trim(),
+        champCategory.value
+    );
+});
+
+champTitre.addEventListener("input", () => {
+    verifierChamps(
+        champPhoto.files[0],
+        champTitre.value.trim(),
+        champCategory.value
+    );
+});
+
+champCategory.addEventListener("change", () => {
+    verifierChamps(
+        champPhoto.files[0],
+        champTitre.value.trim(),
+        champCategory.value
+    );
+});
+
+/********** Choix catégories dans la modale *********************************************************************/
+async function choix_Categorie() {
+    let liste_Category = await fetch("http://localhost:5678/api/categories");
+    liste_Category = await liste_Category.json();
+
+    const category = document.getElementById("category");
+    let content = '<option value="">-- Choisissez une catégorie --</option>';
+
+    liste_Category.forEach((cat) => {
+        content += `<option value="${cat.id}">${cat.name}</option>`;
+    });
+
+    category.innerHTML = content;
 }
 /********** Appel des fonctions *********************************************************************/
 
