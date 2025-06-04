@@ -1,128 +1,132 @@
 const urlApi = "http://localhost:5678";
 
 /********** Affichage connexion **********************************************************************/
-let login = document.getElementById('login');
+let login = document.getElementById("login");
 let connectdisplay = document.getElementById("login_Window");
 let connectdisplaypage = document.getElementById("page");
 
-login.addEventListener("click", () => {  
+login.addEventListener("click", () => {
     if (getComputedStyle(connectdisplay).display !== "none") {
         connectdisplay.style.display = "none";
         connectdisplaypage.style.display = "block";
+        login.style.fontWeight = "500";
     } else {
         connectdisplay.style.display = "block";
         connectdisplaypage.style.display = "none";
+        login.style.fontWeight = "bold";
     }
 });
 
 /********** Authentification Login *******************************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-const loginForm = document.getElementById("login_form");
+    const loginForm = document.getElementById("login_form");
     if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-const email = document.getElementById("login_email").value;
-const password = document.getElementById("login_password").value;
+            const email = document.getElementById("login_email").value;
+            const password = document.getElementById("login_password").value;
 
-    try {
-const response = await fetch(urlApi+"/api/users/login", {
-    method: "POST",
-    headers: {
-    "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-});
+            try {
+                const response = await fetch(urlApi + "/api/users/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
 
-const data = await response.json();
-    if (response.ok) {
+                const data = await response.json();
+                if (response.ok) {
+                    // Stocker le token et l'ID utilisateur
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("userId", data.userId);
 
-        // Stocker le token et l'ID utilisateur
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.userId);
-
-        window.location.href = "/index.html";
-    } else {
-        // Afficher une erreur
-        document.getElementById("login_error").style.display = "block";
-    }
-    } catch (error) {
-        console.error("Erreur lors de la connexion :", error);
-        document.getElementById("login_error").style.display = "block";
-    }
-    });
-
-const authLink = document.getElementById("login");
-const token = localStorage.getItem("token");
-
-    if (authLink) {
-        if (token) {
-    // L'utilisateur est connecté : on affiche "logout"
-    authLink.textContent = "logout";
-    authLink.href = "#";
-
-    authLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        window.location.href = "index.html";
+                    window.location.href = "/index.html";
+                } else {
+                    // Afficher une erreur
+                    document.getElementById("login_error").style.display =
+                        "block";
+                }
+            } catch (error) {
+                console.error("Erreur lors de la connexion :", error);
+                document.getElementById("login_error").style.display = "block";
+            }
         });
 
-    }}
-    //Une fois connecter en admin, gestion des projets et fenêtre Modale
-const modifGallery = document.querySelector(".link_Modif_Gallery");
-const filtres = document.querySelector(".filter_Bar");
+        const authLink = document.getElementById("login");
+        const token = localStorage.getItem("token");
 
-    if (token) {
-        modifGallery.style.display = "flex";
-        filtres.style.display = "none";
-    } else {
-        modifGallery.style.display = "none";
-        filtres.style.display = "flex";
-    };
+        if (authLink) {
+            if (token) {
+                // L'utilisateur est connecté : on affiche "logout"
+                authLink.textContent = "logout";
+                authLink.href = "#";
+
+                authLink.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    window.location.href = "index.html";
+                });
+            }
+        }
+        //Une fois connecter en admin, gestion des projets et fenêtre Modale
+        const modifGallery = document.querySelector(".link_Modif_Gallery");
+        const filtres = document.querySelector(".filter_Bar");
+
+        if (token) {
+            modifGallery.style.display = "flex";
+            filtres.style.display = "none";
+        } else {
+            modifGallery.style.display = "none";
+            filtres.style.display = "flex";
+        }
     }
 });
 
 /********** Création des filtres par catégories ******************************************************/
-async function affichageFlitres() {
-let listeCategories = await fetch("http://localhost:5678/api/categories");
+async function affichageFiltres() {
+    let listeCategories = await fetch("http://localhost:5678/api/categories");
     listeCategories = await listeCategories.json();
 
-const a = document.querySelector(".filter_Bar");
+    const a = document.querySelector(".filter_Bar");
 
-let content = `<div><a><button data-id="all">Tous</button></a></div>`;
+    let content = `<div><a><button data-id="all">Tous</button></a></div>`;
 
-    listeCategories.map(categ => {
+    listeCategories.map((categ) => {
         content += `<div><a><button data-id="${categ.id}">${categ.name}</button></a></div>`;
     });
 
     a.innerHTML = content;
 
     // Activation des filtres
-const boutons = document.querySelectorAll(".filter_Bar button");
-    boutons.forEach(bouton => {
-    bouton.addEventListener("click", (e) => {
-        e.preventDefault();
-        boutons.forEach(b => b.classList.remove("active"));
-        bouton.classList.add("active");
-        affichageProjets(bouton.dataset.id);
+    const boutons = document.querySelectorAll(".filter_Bar button");
+    boutons.forEach((bouton) => {
+        bouton.addEventListener("click", (e) => {
+            e.preventDefault();
+            boutons.forEach((b) => b.classList.remove("active"));
+            bouton.classList.add("active");
+            affichageProjets(bouton.dataset.id);
         });
     });
 }
 
 /********** Affichage des projets ********************************************************************/
 async function affichageProjets(categoryId = null) {
-let listeTravaux = await fetch("http://localhost:5678/api/works");
+    let listeTravaux = await fetch("http://localhost:5678/api/works");
     listeTravaux = await listeTravaux.json();
 
     if (categoryId !== null && categoryId !== "all") {
-        listeTravaux = listeTravaux.filter(work => work.categoryId === parseInt(categoryId));
+        listeTravaux = listeTravaux.filter(
+            (work) => work.categoryId === parseInt(categoryId)
+        );
     }
 
-const projets = document.querySelector(".gallery");
-let content = "";
+    const projets = document.querySelector(".gallery");
+    let content = "";
 
-    listeTravaux.forEach(a => {
+    listeTravaux.forEach((a) => {
         content += `
             <figure>
                 <img src="${a.imageUrl}" alt="${a.title}">
@@ -131,7 +135,7 @@ let content = "";
     });
 
     projets.innerHTML = content;
-};
+}
 
 /********** Fenêtre Modale ***************************************************************************/
 function openModal() {
@@ -140,30 +144,34 @@ function openModal() {
 function closeModal() {
     document.getElementById("modale_Cover").classList.add("modale_Hidden");
 }
-    // Clic sur le bouton de fermeture
-    document.querySelector(".close_Modale").addEventListener("click", closeModal);
+// Clic sur le bouton de fermeture
+document.querySelector(".close_Modale").addEventListener("click", closeModal);
 
-    // Fermer en cliquant en dehors
-    document.getElementById("modale_Cover").addEventListener("click", (e) => {
-        if (e.target.id === "modale_Cover") {
+// Fermer en cliquant en dehors
+document.getElementById("modale_Cover").addEventListener("click", (e) => {
+    if (e.target.id === "modale_Cover") {
         closeModal();
     }
 });
-document.querySelector(".link_Modif_Gallery").addEventListener("click", openModal);
+document
+    .querySelector(".link_Modif_Gallery")
+    .addEventListener("click", openModal);
 
 /********** Affichage des projets dans la modale *****************************************************/
 async function affichageProjetsModale(categoryId = null) {
-let listeTravaux = await fetch("http://localhost:5678/api/works");
+    let listeTravaux = await fetch("http://localhost:5678/api/works");
     listeTravaux = await listeTravaux.json();
 
     if (categoryId !== null && categoryId !== "all") {
-        listeTravaux = listeTravaux.filter(work => work.categoryId === parseInt(categoryId));
+        listeTravaux = listeTravaux.filter(
+            (work) => work.categoryId === parseInt(categoryId)
+        );
     }
 
-const projets = document.querySelector(".gallery_Modale");
-let content = "";
+    const projets = document.querySelector(".gallery_Modale");
+    let content = "";
 
-    listeTravaux.forEach(a => {
+    listeTravaux.forEach((a) => {
         content += `
             <figure data-id="${a.id}" class="projet_Modale">
                 <img src="${a.imageUrl}" alt="${a.title}">
@@ -173,22 +181,24 @@ let content = "";
                     </svg>
                 </div>
             </figure>`;
-});
+    });
 
     projets.innerHTML = content;
 
-document.querySelectorAll(".icon_Delete").forEach(icon => {
-    icon.addEventListener("click", handleDeleteProject);
-});
+    document.querySelectorAll(".icon_Delete").forEach((icon) => {
+        icon.addEventListener("click", handleDeleteProject);
+    });
 
-document.getElementById("modale_Form").addEventListener("click", afficherFormulaireAjout);
-};
+    document
+        .getElementById("photo_Button")
+        .addEventListener("click", afficherFormulaireAjout);
+}
 
 /********** Supprimer des projets dans la modale *****************************************************/
 async function handleDeleteProject(e) {
-const projectId = e.currentTarget.dataset.id;
-const token_Delete = localStorage.getItem("token");
-const delete_Error =document.getElementById("delete_Error");
+    const projectId = e.currentTarget.dataset.id;
+    const token_Delete = localStorage.getItem("token");
+    const delete_Error = document.getElementById("delete_Error");
 
     if (!projectId) {
         console.error("ID du projet non défini.");
@@ -196,16 +206,21 @@ const delete_Error =document.getElementById("delete_Error");
     }
 
     try {
-const response = await fetch(`http://localhost:5678/api/works/${projectId}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token_Delete}`,
-                Accept: "*/*"
+        const response = await fetch(
+            `http://localhost:5678/api/works/${projectId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token_Delete}`,
+                    Accept: "*/*",
+                },
             }
-        });
+        );
 
         if (response.ok) {
-const projectElement = document.querySelector(`figure[data-id="${projectId}"]`);
+            const projectElement = document.querySelector(
+                `figure[data-id="${projectId}"]`
+            );
             if (projectElement) projectElement.remove();
 
             // Recharger la galerie pour mise à jour
@@ -213,71 +228,75 @@ const projectElement = document.querySelector(`figure[data-id="${projectId}"]`);
             affichageProjets();
         } else {
             console.error(`Erreur API : ${response.status}`);
-            delete_Error.textContent ="Échec de la suppression du projet. Vérifiez vos droits.";
+            delete_Error.textContent =
+                "Échec de la suppression du projet. Vérifiez vos droits.";
         }
     } catch (error) {
         console.error("Erreur réseau :", error);
-        error.textContent ="Une erreur réseau est survenue.";
+        error.textContent = "Une erreur réseau est survenue.";
     }
 }
 
-
 /********** Affichage dynamique du formulaire d'ajout ***********************************************/
 function afficherFormulaireAjout() {
-const addProjectContent = document.getElementById("modale_Add_Projects");
-const page1_Modale = document.getElementById("page1_Modale")
+    const addProjectContent = document.getElementById("modale_Add_Projects");
+    const page1_Modale = document.getElementById("page1_Modale");
 
-    page1_Modale.style.display = "none"
+    page1_Modale.style.display = "none";
     addProjectContent.style.display = "flex";
     addProjectContent.style.flexDirection = "column";
     addProjectContent.style.alignItems = "center";
 
-    back_Page1()
+    back_Page1();
 }
-    // Gestion de la soumission
+// Gestion de la soumission
 const valider = document.getElementById("valider");
-    if (valider) {
-        valider.addEventListener("click", handleAjoutProjet);  
-};
-
+if (valider) {
+    valider.addEventListener("click", handleAjoutProjet);
+}
 
 // Gestion du bouton retour
 function back_Page1() {
-const backBtn = document.getElementById("back_Gallery");
+    const backBtn = document.getElementById("back_Gallery");
     backBtn.addEventListener("click", () => {
-    // Revenir à la page 1 de la modale
+        // Revenir à la page 1 de la modale
         document.getElementById("modale_Add_Projects").style.display = "none";
         document.getElementById("page1_Modale").style.display = "block";
-    })
-};
-
+    });
+}
 
 /********** Prévisualisation de l'image ***********************************************/
 const fileTypes = ["image/jpeg", "image/png", "image/jpg"];
 const apiUrl = "http://localhost:5678/api/works";
-const error =document.getElementById("form_Error");
+const error = document.getElementById("form_Error");
 
 document.getElementById("photo")?.addEventListener("change", function () {
-const previewContainer = document.querySelector(".carreAjout");
-const file = this.files[0];
+    const previewContainer = document.querySelector(".carreAjout");
+    const file = this.files[0];
 
     // Supprimer les anciennes prévisualisations
-    previewContainer.querySelectorAll("img.preview").forEach(el => el.remove());
+    previewContainer
+        .querySelectorAll("img.preview")
+        .forEach((el) => el.remove());
+    previewContainer
+        .querySelectorAll(".croix_Contenaire")
+        .forEach((el) => el.remove());
 
     if (!file) return;
 
     if (!fileTypes.includes(file.type)) {
-        error.textContent ="Format non valide. JPG et PNG uniquement.";
+        error.textContent = "Format non valide. JPG et PNG uniquement.";
         return;
     }
 
-const img = document.createElement("img");
+    const img = document.createElement("img");
     img.classList.add("preview");
     img.src = URL.createObjectURL(file);
     img.style.maxHeight = "100%";
 
-const croixContainer = document.createElement("div");
+    const croixContainer = document.createElement("div");
     croixContainer.classList.add("croix_Contenaire");
+    croixContainer.id = "croix_Contenaire";
     croixContainer.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M17.6546 8.05106C18.1235 7.58214 18.1235 6.82061 17.6546 6.35169C17.1856 5.88277 16.4241 5.88277 15.9552 6.35169L12.005 10.3056L8.05106 6.35544C7.58214 5.88652 6.82061 5.88652 6.35169 6.35544C5.88277 6.82436 5.88277 7.58589 6.35169 8.05481L10.3056 12.005L6.35544 15.9589C5.88652 16.4279 5.88652 17.1894 6.35544 17.6583C6.82436 18.1272 7.58589 18.1272 8.05481 17.6583L12.005 13.7044L15.9589 17.6546C16.4279 18.1235 17.1894 18.1235 17.6583 17.6546C18.1272 17.1856 18.1272 16.4241 17.6583 15.9552L13.7044 12.005L17.6546 8.05106Z" fill="black"/>
@@ -288,69 +307,71 @@ const croixContainer = document.createElement("div");
     document.getElementById("texte_preview").style.display = "none";
 
     croixContainer.addEventListener("click", () => {
-    document.getElementById("texte_preview").style.display = "flex";
-    img.remove();
-    croixContainer.style.display ="none";
-//    document.getElementById("photo").value = "";
-    })
+        document.getElementById("texte_preview").style.display = "flex";
+        img.remove();
+        croixContainer.remove();
+    });
 });
-
-document.getElementById("page2_Modale")?.addEventListener("submit", handleAjoutProjet);
-
 
 /********** Ajouter un projet dans la modale *****************************************************/
 
 async function handleAjoutProjet(e) {
     e.preventDefault();
 
-const token_Add = localStorage.getItem("token");
-const photo = document.getElementById("photo").files[0];
-const title = document.getElementById("titre").value.trim();
-const category = document.getElementById("category").value;
-const form_Error =document.getElementById("form_Error");
+    const token_Add = localStorage.getItem("token");
+    const photo = document.getElementById("photo").files[0];
+    const title = document.getElementById("titre").value.trim();
+    const category = document.getElementById("category").value;
+    const form_Error = document.getElementById("form_Error");
 
     if (!photo || !title || !category) {
-        form_Error.textContent ="Veuillez remplir tous les champs."
+        form_Error.textContent = "Veuillez remplir tous les champs.";
         return;
     }
 
     const fileTypes = ["image/jpeg", "image/png"];
     if (!fileTypes.includes(photo.type)) {
-        form_Error.textContent ="Image invalide (seuls JPG et PNG sont acceptés).";
+        form_Error.textContent =
+            "Image invalide (seuls JPG et PNG sont acceptés).";
         return;
     }
 
-const formData = new FormData();
+    const formData = new FormData();
     formData.append("image", photo);
     formData.append("title", title);
     formData.append("category", category);
 
-    
-const response = await fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token_Add}`
-            },
-            body: formData
-        });
+    const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token_Add}`,
+        },
+        body: formData,
+    });
 
-        if (response.ok) {
-const valider = document.getElementById("valider");
-            valider.addEventListener("click", () => {
-            document.getElementById("modale_Add_Projects").style.display = "none";
-            document.getElementById("page1_Modale").style.display = "block";
-        })
-            affichageProjetsModale();
-            affichageProjets();
-            
-        } else {
-            console.error("Erreur API :", response.status);
-            form_Error.textContent ="Échec de l'ajout. Vérifiez vos données ou votre session.";
-        }
+    if (response.ok) {
+        await affichageProjets();
+        await affichageProjetsModale();
 
-    } 
+        // Réinitialiser le formulaire
+        document.getElementById("photo").value = "";
+        document.getElementById("titre").value = "";
+        document.getElementById("category").value = "";
+        document.querySelector(".carreAjout .preview")?.remove();
+        document.getElementById("texte_preview").style.display = "flex";
+        document.getElementById("croix_Contenaire").style.display = "none";
+
+        // Retour à la page 1 de la modale
+        document.getElementById("modale_Add_Projects").style.display = "none";
+        document.getElementById("page1_Modale").style.display = "block";
+
+        form_Error.textContent = "";
+    } else {
+        form_Error.textContent = "Erreur lors de l'ajout du projet.";
+    }
+}
 /********** Appel des fonctions *********************************************************************/
 
-affichageFlitres();
+affichageFiltres();
 affichageProjets();
 affichageProjetsModale();
